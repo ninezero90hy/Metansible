@@ -11,8 +11,6 @@
 
 @see https://github.com/ninezero90hy/metatron-settings
 
-@see https://gitlab.com/metatron/settings
-
 Created by referring to the project to set up the metatron development environment.
 
 
