@@ -1,0 +1,12 @@
+#!/bin/sh
+mysql -uroot -e "create database if not exists hive_metastore_db; \
+grant all privileges on *.* to 'hive'@'localhost' identified by 'hive' with grant option; \
+grant all privileges on *.* to 'hive'@'%' identified by 'hive' with grant option; \
+grant all privileges on hive_metastore_db.* to 'hive'@'%' identified by 'hive'; \
+create database if not exists polaris CHARACTER SET utf8; \
+grant all privileges on polaris.* TO polaris@localhost identified by 'polaris'; \
+grant all privileges on polaris.* TO polaris@'%' identified by 'polaris'; \
+create database if not exists polaris_datasources CHARACTER SET utf8; \
+grant all privileges on polaris_datasources.* TO polaris@localhost identified by 'polaris'; \
+grant all privileges on polaris_datasources.* TO polaris@'%' identified by 'polaris'; \
+flush privileges;"

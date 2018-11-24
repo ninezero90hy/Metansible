@@ -1,0 +1,101 @@
+- name: Download apache-maven-3.5.4-bin.tar.gz package
+  become: yes
+  become_user: root
+  get_url:
+    url: http://www-us.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz
+    dest: /tmp
+    timeout: 60
+
+- name: Unarchive a apache-maven-3.5.4-bin.tar.gz
+  become: yes
+  become_user: root
+  unarchive:
+    src: /tmp/apache-maven-3.5.4-bin.tar.gz
+    dest: /usr/local/src
+    remote_src: yes
+
+- name: Install gcc-c++ make package
+  become: yes
+  become_user: root
+  yum:
+    name: gcc-c++, make
+    state: latest
+
+- name: Install a nodejs
+  become: yes
+  become_user: root
+  shell: curl -sL https://rpm.nodesource.com/setup_11.x | sudo -E bash -
+  args:
+    executable: /bin/bash
+
+- name: Install nodejs package
+  become: yes
+  become_user: root
+  yum:
+    name: nodejs
+    state: latest
+
+- name: Install a Angular CLI
+  become: yes
+  become_user: root
+  shell: npm install -g @angular/cli@latest
+  args:
+    executable: /bin/bash
+
+- name: Create metatron project workspace
+  file:
+    path: "/home/{{ user_name }}/workspace"
+    state: directory
+    owner: "{{ user_name }}"
+
+- name: Git metatron clone
+  git:
+    repo: "https://github.com/metatron-app/metatron-discovery.git"
+    dest: "/home/{{ user_name }}/workspace"
+
+- name: check exist directory
+  stat:
+    path: "/home/{{ user_name }}/workspace/discovery-distribution/target"
+  register: directory_result
+
+
+- name: Metatron packaging
+  shell: mvn clean package -Dmaven.test.skip=true -U
+  args:
+    chdir: "/home/{{ user_name }}/workspace"
+    executable: /bin/bash
+  when: directory_result.stat.exists == False
+
+- name: ps check metatron
+  shell: ps -ef | grep metatron
+  register: result_metatron
+
+- name: start metatron
+  block:
+    - name: set fact target directory
+      set_fact:
+        target_dir: /home/{{ user_name }}/workspace/discovery-distribution/target
+
+    - name: find tar file
+      find:
+        paths: "{{ target_dir }}"
+        patterns: "metatron-discovery-3.0.5-*"
+      register: file_to_copy
+
+    - name: set fact file name
+      set_fact:
+        file_name: "{{ item.path | replace(target_dir + '/', '') | replace('-bin.tar.gz', '') }}"
+      with_items: "{{ file_to_copy.files }}"
+  
+    - name: Copy application-config.templete.yaml.j2
+      template:
+        src: application-config.yaml.j2
+        dest: "{{ target_dir }}/{{ file_name }}-bin/{{ file_name }}/conf/application-config.yaml"
+
+    - name: Start metatron
+      shell: ./metatron.sh start --init
+      args:
+        chdir: "{{ target_dir }}/{{ file_name }}-bin/{{ file_name }}/bin"
+        executable: /bin/bash
+
+  when: result_metatron.stdout.find("metatron-server") == -1

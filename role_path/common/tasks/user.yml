@@ -1,0 +1,27 @@
+- name: Add sudoers users
+  user: 
+    name: "{{ user_name }}"
+    password: "{{ user_pw | password_hash('sha512') }}"
+    generate_ssh_key: yes
+
+- name: passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%{{ user_name }}"
+    line: "%{{ user_name }} ALL=(ALL) ALL"
+
+#- name: create ssh key
+#  user:
+#    name: root
+#    generate_ssh_key: yes
+
+- name: copy public key
+  copy:
+    src: "/home/{{ user_name }}/.ssh/id_rsa.pub"
+    dest: "/home/{{ user_name }}/.ssh/authorized_keys"
+    mode: 0600
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    remote_src: yes
+

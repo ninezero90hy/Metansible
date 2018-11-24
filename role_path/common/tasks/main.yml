@@ -1,0 +1,51 @@
+- name: import user
+  import_tasks: user.yml
+
+- name: install package
+  yum:
+    name: unzip, git, wget, java-1.8.0-openjdk-devel.x86_64
+    state: latest
+
+- name: create directory
+  file:
+    path: /Development/Hadoop
+    state: directory
+    owner: "{{ user_name }}"
+
+- name: git clone
+  git:
+    repo: "https://github.com/ninezero90hy/metatron-settings.git"
+    dest: /Development/settings
+
+- name: change owner
+  file:
+    path: /Development
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    recurse: yes
+
+- name: Add IP address of all hosts to all hosts
+  become: yes
+  become_user: root
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ hostvars[item].ansible_host }} {{ hostvars[item].inventory_hostname }} {{ hostvars[item].inventory_hostname_short }}"
+    state: present
+  with_items: "{{ groups.all }}"
+
+- name: change hostname
+  become: yes
+  become_user: root
+  hostname:
+    name: "{{ inventory_hostname }}"
+  
+- name: disable firewall
+  become: yes
+  become_user: root
+  service:
+    name: firewalld
+    state: stopped
+    enabled: no
+  ignore_errors: yes
+

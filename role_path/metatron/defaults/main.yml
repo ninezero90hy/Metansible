@@ -1,0 +1,2 @@
+DRUID_URL: "{{ hostvars[groups['druid'][0]].inventory_hostname }}"
+HIVE_URL: "{{ hostvars[groups['hive'][0]].inventory_hostname }}"

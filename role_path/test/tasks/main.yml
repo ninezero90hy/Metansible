@@ -1,0 +1,20 @@
+- name: debug
+  command: echo $JAVA_HOME
+  register: result
+
+- name: result
+  debug:
+    msg: "{{ result.stdout }}"
+
+- name: command
+  shell: export JAVA_HOME=44444
+  args:
+    executable: /bin/bash
+
+- name: debug
+  command: echo $JAVA_HOME
+  register: result
+
+- name: result
+  debug:
+    msg: "{{ result.stdout }}"

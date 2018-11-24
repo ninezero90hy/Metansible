@@ -1,0 +1,42 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+  roles:
+    - {role: common}
+
+- hosts: application
+  become: yes
+  become_user: "{{ user_name }}"
+  roles:
+    - {role: mariadb}
+
+- hosts: hive
+  environment:
+    JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk
+    HADOOP_HOME: /Development/Hadoop/hadoop
+    HIVE_HOME: /Development/Hadoop/hive
+    PATH: /Development/Hadoop/hive/bin:/Development/Hadoop/hadoop/bin:{{ ansible_env.PATH }}
+  become: yes
+  become_user: "{{ user_name }}"
+  roles:
+    - {role: env}
+    - {role: hadoop}
+    - {role: hive}
+
+- hosts: druid
+  become: yes
+  become_user: "{{ user_name }}"
+  roles:
+    - {role: druid}
+
+- hosts: application
+  environment:
+    M2_HOME: /usr/local/src/apache-maven-3.5.4
+    PATH: /usr/local/src/apache-maven-3.5.4/bin:{{ ansible_env.PATH }}
+    METATRON_ENV_MODE: metansible
+    METATRON_DB_TYPE: mysql
+  become: yes
+  become_user: "{{ user_name }}"
+  roles:
+    - {role: metatron}

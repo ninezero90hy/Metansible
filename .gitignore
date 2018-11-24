@@ -1,0 +1,8 @@
+*.retry
+.idea/
+encodings.xml
+metatron-ansible.iml
+misc.xml
+modules.xml
+R_User_Library.xml
+vcs.xml

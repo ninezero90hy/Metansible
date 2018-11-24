@@ -1,0 +1,85 @@
+- name: Create druid-binary directory
+  file:
+    path: /Development/druid-binary
+    state: directory
+    owner: "{{ user_name }}"
+
+- name: Git druid binary clone
+  git:
+    repo: "https://gitlab.com/metatron/druid-0.9.1-snapshot.local.201801111508-bin.tar.gz.git"
+    dest: /Development/druid-binary
+
+- name: Copy druid binary file
+  copy:
+    src: /Development/druid-binary/druid-0.9.1-snapshot.local.201801111508-bin.tar.gz/druid-0.9.1-SNAPSHOT.local.201801111508-bin.tar.gz
+    dest: /Development/settings
+    remote_src: yes
+
+- name: Create druid directory
+  file:
+    path: /Development/Hadoop/druid
+    state: directory
+    owner: "{{ user_name }}"
+
+- name: Unarchive a druid_bootstrap_init.zip
+  unarchive:
+    src: /Development/settings/druid_bootstrap_init.zip
+    dest: /Development/Hadoop/druid
+    remote_src: yes
+
+- name: Unarchive a druid-0.9.1-SNAPSHOT.local.201801111508-bin.tar.gz
+  unarchive:
+    src: /Development/settings/druid-0.9.1-SNAPSHOT.local.201801111508-bin.tar.gz
+    dest: /Development/Hadoop/druid
+    remote_src: yes
+
+- name: Execute init.sh shell
+  shell: ./init.sh druid-0.9.1-SNAPSHOT.local.201801111508
+  args:
+    chdir: /Development/Hadoop/druid
+
+- name: Override single.sh
+  copy:
+    src: single.sh
+    dest: /Development/Hadoop/druid/druid/bin
+    force: yes
+    mode: 0700
+
+- name: Process check druid
+  shell: ps -ef | grep druid
+  register: result_druid
+
+- name: Druid start
+  shell: ./start-single.sh
+  when: result_druid.stdout.find("zookeeper broker coordinator historical middleManager overlord") == -1
+  args:
+    chdir: /Development/Hadoop/druid/druid
+    executable: /bin/bash
+
+- name: Copy ingestion.zip file
+  copy:
+    src: /Development/settings/ingestion.zip
+    dest: /Development/Hadoop
+    remote_src: yes
+
+- name: Unarchive a ingestion.zip
+  unarchive:
+    src: /Development/Hadoop/ingestion.zip
+    dest: /Development/Hadoop
+    remote_src: yes
+
+- name: Override index_sales_join_category_spec.json file
+  copy:
+    src: index_sales_join_category_spec.json
+    dest: /Development/Hadoop/ingestion/index_sales_join_category_spec.json
+    force: yes
+
+- name: Execute run_index.sh shell
+  shell: ./run_index.sh index_sales_join_category_spec.json
+  register: result_run_index
+  until: "result_run_index.stdout != ''"
+  retries: 60
+  delay: 1
+  args:
+    chdir: /Development/Hadoop/ingestion
+

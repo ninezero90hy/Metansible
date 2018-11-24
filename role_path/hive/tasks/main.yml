@@ -1,0 +1,77 @@
+---
+- name: check exist directory
+  stat:
+    path: /Development/Hadoop/hive
+  register: directory_result
+
+- name: unarchive
+  unarchive:
+    src: /Development/settings/metatron-hive.tar.gz
+    dest: /Development/Hadoop
+    remote_src: yes
+  when: directory_result.stat.exists == False
+
+- name: set HDFS directory
+  become: yes
+  become_user: metatron
+  shell: |
+    hdfs dfsadmin -safemode leave
+    hadoop fs -mkdir /tmp
+    hadoop fs -mkdir -p /user/hive/warehouse
+    hadoop fs -chmod g+w /tmp
+    hadoop fs -chmod g+w /user/hive/warehouse
+    hadoop fs -chown "{{ user_name }}" /user/hive
+    hadoop fs -chown "{{ user_name }}" /user/hive/warehouse
+  ignore_errors: yes
+
+- name: copy shell
+  template:
+    src: hive-env.sh.j2
+    dest: /Development/Hadoop/hive/conf/hive-env.sh
+    mode: 0700
+
+- name: copy conf xml
+  template:
+    src: hive-site.xml.j2
+    dest: /Development/Hadoop/hive/conf/hive-site.xml
+
+- name: create directory
+  file:
+    path: /Development/Hadoop/hive/log
+    state: directory
+
+- name: ps check metastore
+  shell: ps -ef | grep metastore
+  register: result_metastore
+
+- name: exec metastore
+  shell: |
+    nohup hive --service metastore > /Development/Hadoop/hive/log/hive_metastore.log < /dev/null 2>&1 & 
+  when: result_metastore.stdout.find("HiveMetaStore") == -1
+
+- name: ps check hiveserver2
+  shell: ps -ef | grep server
+  register: result_hiveserver
+
+- name: exec hiveserver2
+  shell: |
+    nohup hiveserver2 > /Development/Hadoop/hive/log/hiveserver2.log < /dev/null 2>&1 &
+  when: result_hiveserver.stdout.find("HiveServer2") == -1
+
+#- name: download mysql
+#  become: yes
+#  become_user: root
+#  shell: |
+#    wget https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+#    rpm -ivh mysql80-community-release-el7-1.noarch.rpm
+#  ignore_errors: yes
+
+#- name: install mysql-client
+#  become: yes
+#  become_user: root
+#  yum:
+#    name: mysql-community-client
+
+#- name: update mysql schema
+#  command: /bin/bash -c "mysql -h metatron -uhive hive_metastore_db < /Development/Hadoop/hive/scripts/metastore/upgrade/mysql/hive-schema-1.2.0.mysql.sql"
+#  ignore_errors: yes

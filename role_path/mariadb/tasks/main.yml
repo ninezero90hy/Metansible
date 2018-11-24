@@ -1,0 +1,91 @@
+---
+- name: copy mariadb repo file
+  become: yes
+  become_user: root
+  copy:
+    src: MariaDB.repo
+    dest: /etc/yum.repos.d/MaridDB.repo
+
+- name: gpgkey import
+  become: yes
+  become_user: root
+  rpm_key:
+    state: present
+    key: http://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+
+- name: install mariadb
+  become: yes
+  become_user: root
+  yum:
+    name: 
+      - MariaDB-server
+      - MariaDB-client
+      - MySQL-python
+
+- name: start service mariadb
+  become: yes
+  become_user: root
+  service: 
+    name: mysql
+    state: started
+
+- name: copy shell
+  template:
+    src: grant.sh.j2
+    dest: /tmp/grant.sh
+    mode: 0700
+
+- name: exec shell
+  command: /bin/bash -c "/tmp/grant.sh"
+  ignore_errors: yes
+
+#- name: create a new database
+#  become: yes
+#  become_user: root
+#  mysql_db:
+#    name: hive_metastore_db
+#    state: present
+
+#- name: grant user
+#  become: yes
+#  become_user: root
+#  mysql_user:
+#    login_user: root
+#    name: hive
+#    priv: '*.*:ALL,GRANT'
+#    state: present
+
+#- name: grant user
+#  become: yes
+#  become_user: root
+#  mysql_user:
+#    name: hive
+#    host: '%'
+#    priv: '*.*:ALL,GRANT'
+#    state: present
+
+#- name: grant user
+#  become: yes
+#  become_user: root
+#  mysql_user:
+#    login_user: root
+#    name: hive
+#    host_all: yes
+#    priv: 'hive_metastore_db.*:ALL,GRANT'
+#    state: present
+
+- name: check exist directory
+  stat:
+    path: /Development/Hadoop/hive
+  register: directory_result
+
+- name: unarchive
+  unarchive:
+    src: /Development/settings/metatron-hive.tar.gz
+    dest: /Development/Hadoop
+    remote_src: yes
+  when: directory_result.stat.exists == False
+
+- name: update mysql schema
+  command: /bin/bash -c "mysql -uroot hive_metastore_db < /Development/Hadoop/hive/scripts/metastore/upgrade/mysql/hive-schema-1.2.0.mysql.sql"
+  ignore_errors: yes

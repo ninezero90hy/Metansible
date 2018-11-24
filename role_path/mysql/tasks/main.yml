@@ -1,0 +1,20 @@
+- name: download mysql rpm
+  yum:
+    name: http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
+    state: present
+
+- name: install mysql-server
+  yum:
+    name: 
+      - mysql-community-server
+      - MySQL-python
+
+- name: Start service mysql
+  service:
+    name: mysqld
+    state: started
+
+- name: Create a new database
+  mysql_db:
+    name: test_db
+    state: present 

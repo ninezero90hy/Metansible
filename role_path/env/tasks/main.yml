@@ -1,0 +1,31 @@
+---
+- name: set env
+  become: yes
+  become_user: root
+  lineinfile:
+    dest: "/home/{{ user_name }}/.bashrc"
+    state: present
+    regexp: "^export {{ item.key }}"
+    insertafter: 'EOF'
+    line: "export {{ item.key }}={{ item.value}}"
+  with_items: "{{ env }}"
+
+- name: source env
+  become: yes
+  become_user: root
+  command: /bin/bash -c "source /home/{{ user_name }}/.bashrc"
+
+- name: copy shell
+  become: yes
+  become_user: root
+  template:
+    src: env.sh.j2
+    dest: /tmp/env.sh
+    mode: 0700
+
+- name: exec shell
+  become: yes
+  become_user: root
+  command: /bin/bash -c "/tmp/env.sh"
+    
+  
