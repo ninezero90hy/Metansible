@@ -2,11 +2,9 @@
 *Configuring Metatron Development with Ansible*
 
 
-
 ## Goal
 
 [metatron-discovery](https://github.com/metatron-app/metatron-discovery) Project automate development environment settings.
-
 
 
 ## Referenced project
@@ -15,8 +13,7 @@
 
 @see https://gitlab.com/metatron/settings
 
-Created by referring to the project to set up the metatron development environment
-
+Created by referring to the project to set up the metatron development environment.
 
 
 ## How to run
