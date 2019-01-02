@@ -5,7 +5,7 @@
 
 ## Goal ✔︎
 
-[metatron-discovery](https://github.com/metatron-app/metatron-discovery) Project automate development environment settings.
+[Metatron discovery](https://github.com/metatron-app/metatron-discovery) Project automate development environment settings.
 
 
 ## Referenced project 👇
