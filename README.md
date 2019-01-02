@@ -7,7 +7,7 @@
 
 ## Goal ✔︎
 
-[Metatron discovery](https://github.com/metatron-app/metatron-discovery) project automate development environment settings.
+*[Metatron discovery](https://github.com/metatron-app/metatron-discovery) project automate development environment settings.*
 
 
 ## Referenced project 👇
@@ -21,5 +21,4 @@ $ ansible-playbook playbook.yml
 ```
 
 ## License ✔︎
-The metansible project is distributed under the MIT license. See the [LICENSE](LICENSE) file for more information.
-
+*The metansible project is distributed under the MIT license. See the [LICENSE](LICENSE) file for more information.*
