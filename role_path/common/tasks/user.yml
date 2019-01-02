@@ -11,11 +11,6 @@
     regexp: "^%{{ user_name }}"
     line: "%{{ user_name }} ALL=(ALL) ALL"
 
-#- name: create ssh key
-#  user:
-#    name: root
-#    generate_ssh_key: yes
-
 - name: copy public key
   copy:
     src: "/home/{{ user_name }}/.ssh/id_rsa.pub"
