@@ -3,12 +3,12 @@
 
 *The project has been created to work in CentOS.*
 
-## Goal
+## Goal 🤠
 
 [metatron-discovery](https://github.com/metatron-app/metatron-discovery) Project automate development environment settings.
 
 
-## Referenced project
+## Referenced project 👇
 
 @see https://github.com/ninezero90hy/metatron-settings
 
