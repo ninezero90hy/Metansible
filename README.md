@@ -1,4 +1,4 @@
-# Metansible ( metatron + ansible )
+# Metansible ( ⛴ metatron + ansible ⛱ )
 😎 *This is a project to automatically set up the Metron development environment.*
 
 *The project has been created to work in CentOS.*
