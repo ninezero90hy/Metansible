@@ -1,5 +1,5 @@
 ---
-- name: set env
+- name: Set env
   become: yes
   become_user: root
   lineinfile:
@@ -10,12 +10,12 @@
     line: "export {{ item.key }}={{ item.value}}"
   with_items: "{{ env }}"
 
-- name: source env
+- name: Source env
   become: yes
   become_user: root
   command: /bin/bash -c "source /home/{{ user_name }}/.bashrc"
 
-- name: copy shell
+- name: Copy shell
   become: yes
   become_user: root
   template:
@@ -23,7 +23,7 @@
     dest: /tmp/env.sh
     mode: 0700
 
-- name: exec shell
+- name: Exec shell
   become: yes
   become_user: root
   command: /bin/bash -c "/tmp/env.sh"
