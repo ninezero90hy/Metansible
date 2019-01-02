@@ -39,41 +39,6 @@
   command: /bin/bash -c "/tmp/grant.sh"
   ignore_errors: yes
 
-#- name: create a new database
-#  become: yes
-#  become_user: root
-#  mysql_db:
-#    name: hive_metastore_db
-#    state: present
-
-#- name: grant user
-#  become: yes
-#  become_user: root
-#  mysql_user:
-#    login_user: root
-#    name: hive
-#    priv: '*.*:ALL,GRANT'
-#    state: present
-
-#- name: grant user
-#  become: yes
-#  become_user: root
-#  mysql_user:
-#    name: hive
-#    host: '%'
-#    priv: '*.*:ALL,GRANT'
-#    state: present
-
-#- name: grant user
-#  become: yes
-#  become_user: root
-#  mysql_user:
-#    login_user: root
-#    name: hive
-#    host_all: yes
-#    priv: 'hive_metastore_db.*:ALL,GRANT'
-#    state: present
-
 - name: check exist directory
   stat:
     path: /Development/Hadoop/hive
