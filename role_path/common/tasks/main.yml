@@ -1,23 +1,23 @@
-- name: import user
+- name: Import user
   import_tasks: user.yml
 
-- name: install package
+- name: Install packages
   yum:
     name: unzip, git, wget, java-1.8.0-openjdk-devel.x86_64
     state: latest
 
-- name: create directory
+- name: Create Hadoop directory
   file:
     path: /Development/Hadoop
     state: directory
     owner: "{{ user_name }}"
 
-- name: git clone
+- name: Clone metatron settings git repository
   git:
     repo: "https://github.com/ninezero90hy/metatron-settings.git"
     dest: /Development/settings
 
-- name: change owner
+- name: Change Development directory owner
   file:
     path: /Development
     state: directory
@@ -34,13 +34,13 @@
     state: present
   with_items: "{{ groups.all }}"
 
-- name: change hostname
+- name: Change hostname
   become: yes
   become_user: root
   hostname:
     name: "{{ inventory_hostname }}"
   
-- name: disable firewall
+- name: Disable firewall
   become: yes
   become_user: root
   service:
