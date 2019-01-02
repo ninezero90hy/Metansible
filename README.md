@@ -12,8 +12,7 @@
 
 [Metatron settings shell command project](https://github.com/ninezero90hy/metatron-settings)
 
-Created by referring to the project to set up the metatron development environment.
-
+*Created by referring to the project to set up the metatron development environment.*
 
 ## How to run 👍
 
