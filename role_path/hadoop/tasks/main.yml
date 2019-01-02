@@ -1,32 +1,32 @@
 ---
-- name: check exist file
+- name: Check exist file
   stat:
     path: /tmp/hadoop-2.7.4.tar.gz
   register: file_result
 
-- name: download hadoop
+- name: Download hadoop
   get_url:
     url: https://archive.apache.org/dist/hadoop/core/hadoop-2.7.4/hadoop-2.7.4.tar.gz 
     dest: /tmp  
   when: file_result.stat.exists == False
 
-- name: check exist directory
+- name: Check exist directory
   stat:
     path: /Development/Hadoop/hadoop
   register: directory_result
 
-- name: unarchive
+- name: Unarchive hadoop binary file
   unarchive:
     src: /tmp/hadoop-2.7.4.tar.gz
     dest: /Development/Hadoop
     creates: /Development/Hadoop/hadoop
     remote_src: yes
 
-- name: move directory
+- name: Rename hadoop directory
   command: mv /Development/Hadoop/hadoop-2.7.4 /Development/Hadoop/hadoop
   when: directory_result.stat.exists == False
 
-- name: set env
+- name: Set env
   lineinfile:
     dest: /Development/Hadoop/hadoop/etc/hadoop/hadoop-env.sh 
     regexp: "{{ item.regexp }}"
@@ -35,7 +35,7 @@
     - { regexp: '^export HADOOP_HOME', line: 'export HADOOP_HOME="/Development/Hadoop/hadoop"' }
     - { regexp: '^export HADOOP_CONF_DIR', line: 'export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-"${HADOOP_HOME}/etc/hadoop"}' }
 
-- name: copy config files
+- name: Copy configuration files
   template:
     src: "{{ item }}.j2"
     dest: "/Development/Hadoop/hadoop/etc/hadoop/{{ item }}"
@@ -45,12 +45,12 @@
     - mapred-site.xml
     - yarn-site.xml
 
-- name: check exists tmp
+- name: Check exists tmp
   file: 
     path: /Development/Hadoop/hadoop/tmp
     state: absent
 
-- name: host check disable
+- name: Host check disable
   become: yes
   become_user: root
   lineinfile:
@@ -60,12 +60,12 @@
   with_items:
     - { regexp: '^StrictHostKeyChecking', line: 'StrictHostKeyChecking no' }
 
-- name: command
+- name: Command
   command: /Development/Hadoop/hadoop/bin/hdfs namenode -format
 
-- name: command
+- name: Command
   command: /Development/Hadoop/hadoop/sbin/start-dfs.sh
 
-- name: command
+- name: Command
   command: /Development/Hadoop/hadoop/sbin/start-yarn.sh
 
