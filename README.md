@@ -14,7 +14,7 @@
 
 *It was created by referring to the "[Metatron settings](https://github.com/ninezero90hy/metatron-settings)" project to set up a metatron development environment.*
 
-## How to run 👍
+## How to run ✔︎
 
 ```shell
 $ ansible-playbook playbook.yml
