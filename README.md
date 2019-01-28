@@ -1,7 +1,7 @@
 # Metansible ( metatron + ansible )
 😎 *This is a project to automatically set up the **Metatron** development environment.*
 
-*The project has been created to work in CentOS.*
+*The project has been created to work in CentOS 7.x*
 
 ## Goal ✔︎
 
