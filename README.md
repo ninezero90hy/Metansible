@@ -3,8 +3,6 @@
 
 *The project has been created to work in CentOS.*
 
-*CentOS version 7.x*
-
 ## Goal ✔︎
 
 *[Metatron discovery](https://github.com/metatron-app/metatron-discovery) project automate development environment settings.*
@@ -16,7 +14,7 @@
 
 ## How to run ✔︎
 
-```shell
+```bash
 $ ansible-playbook playbook.yml
 ```
 
