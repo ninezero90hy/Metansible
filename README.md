@@ -7,7 +7,7 @@
 
 ## Goal ✔︎
 
-*If you're wondering what I'm going to do, look around the [Metatron Discovery Project](https://github.com/metatron-app/metatron-discovery) Repository*
+*If you're wondering what I'm going to do, look around the [Metatron Project](https://github.com/metatron-app/metatron-discovery) Repository*
 
 ## Referenced project 👇
 
