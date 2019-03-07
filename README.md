@@ -5,7 +5,7 @@
 
 *You can use it at CentOS. Maybe CentOS 7.x* 😎
 
-## Goal ✔︎
+## My Target 👇
 
 *If you're wondering what I'm going to do, look around the [Metatron Project](https://github.com/metatron-app/metatron-discovery) Repository*
 
