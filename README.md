@@ -1,7 +1,9 @@
 # Metansible ( metatron + ansible )
 😎 *Automatically helps build a *metatron* development environment*
 
-*The project has been created to work in CentOS 7.x*
+*Unfortunately, it won't be available in OSs of various environments*
+
+*You can use it at CentOS. Maybe CentOS 7.x*
 
 ## Goal ✔︎
 
